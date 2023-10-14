@@ -1,0 +1,35 @@
+{
+    "manifest_version": 2,
+    "name": "Email Verifier",
+    "version": "1.0",
+    "description": "Verifies emails automatically, based on selected email account.",
+    "permissions": [
+      "activeTab",
+      "https://mail.google.com/",
+      "storage"
+    ],
+    "browser_action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "images/icon16.png",
+        "48": "images/icon48.png",
+        "128": "images/icon128.png"
+      }
+    },
+    "icons": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://mail.google.com/*"],
+        "js": ["content.js"]
+      }
+    ],
+    "oauth2": {
+      "client_id": "YOUR_CLIENT_ID",
+      "scopes": ["https://www.googleapis.com/auth/gmail.readonly"]
+    }
+  }
+  
