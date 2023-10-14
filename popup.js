@@ -7,7 +7,7 @@
 //require('dotenv').config();
 document.addEventListener('DOMContentLoaded', function () {
 	const verificationForm = document.getElementById('verification-form');
-
+ 
 	verificationForm.addEventListener('submit', function (event) {
     	event.preventDefault();
 
