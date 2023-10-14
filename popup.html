@@ -7,8 +7,13 @@
 </head>
 <body>
     <h1>Welcome to Email Verifier!</h1>
-    <button id="authorize">Authorize</button>
-    <button>Add Account</button>
+    <form action="" id="verification-form">
+        <label for="email">Email:</label>
+    	<input type="text" id="email" name="email" required><br><br>
+    	<label for="password">Password:</label>
+    	<input type="password" id="password" name="password" required><br><br>
+    	<button id="authorize">Authorize</button>
+    </form>
     <script src="popup.js"></script>
 </body>
 </html>
