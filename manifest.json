@@ -6,14 +6,16 @@
     "permissions": [
       "activeTab",
       "https://mail.google.com/",
-      "storage"
+      "storage",
+      "identity",
+      "https://www.googleapis.com/"
     ],
     "browser_action": {
       "default_popup": "popup.html",
       "default_icon": {
         "16": "images/icon16.png",
-        "48": "images/icon48.png",
-        "128": "images/icon128.png"
+        "48": "images/icon48.png", 
+        "128": "images/icon128.png" 
       }
     },
     "icons": {
@@ -28,8 +30,11 @@
       }
     ],
     "oauth2": {
-      "client_id": "YOUR_CLIENT_ID",
-      "scopes": ["https://www.googleapis.com/auth/gmail.readonly"]
+      "client_id": "YOUR_CLIENT_ID", 
+      "scopes": ["https://www.googleapis.com/auth/gmail.readonly"],
+      "redirect_uri": "chrome-extension://your-extension-id/oauth2-redirect.html",
+      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+      "token_uri": "https://accounts.google.com/o/oauth2/token"
     }
   }
   
