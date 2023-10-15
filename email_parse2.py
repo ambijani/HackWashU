@@ -8,7 +8,7 @@ import os
 import re
 import sys
 
-openai.api_key = "ADD_KEY"
+openai.api_key = "process.env.OPENAI-KEY"
 
 def list_emails(oauth_token):
     # Set up the API endpoint
