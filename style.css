@@ -1,46 +1,116 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #2ECC71; /* Green background */
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 24px;
+    color: #3498DB; /* Blue heading text */
+    margin: 20px 0;
+}
+
+#verification-form {
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #3498DB; /* Blue form background */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+label {
+    display: block;
+    margin: 10px 0;
+    color: #2ECC71; /* Green label text */
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #2ECC71; /* Green button background */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #27AE60; /* Darker green on hover */
+}
+
+/* Add some spacing and alignment to buttons */
+#authorize {
+    display: block;
+    margin: 20px auto;
+}
+
+#Auth {
+    background-color: #3498DB; /* Blue button background */
+    color: #fff;
+}
+
 /* Style for dropdown menu */
 .dropdown-container {
-    position: relative;
     display: inline-block;
+    position: relative;
+}
+
+.dropdown-button {
+    background-color: #2ECC71; /* Green button background */
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 3px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
 }
 
 .dropdown-content {
-    display: none;
     position: absolute;
-    background-color: #f9f9f9;
+    display: none;
+    background-color: #fff;
     min-width: 160px;
+    border: 1px solid #ccc;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
+    margin-top: 5px;
 }
+
 .dropdown-content.show {
     display: block;
-    /* other styles */
 }
+
 .dropdown-content a {
-    color: black;
-    padding: 12px 16px;
+    color: #3498DB; /* Blue link text */
+    padding: 10px 15px;
     text-decoration: none;
     display: block;
 }
 
-.dropdown-button {
-    background-color: #3498DB;
-    color: white;
-    padding: 16px;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-}
-
-.dropdown-button:hover,
-.dropdown-button:focus {
-    background-color: #2980B9;
-}
-
 .dropdown-content a:hover {
-    background-color: #ddd;
+    background-color: #27AE60; /* Darker green on hover */
+    color: #fff;
 }
 
-.show {
-    display: block;
-}
+/* Additional styles as needed */
