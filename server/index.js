@@ -1,15 +1,29 @@
+
+const http = require('http');
+// const socketIO = require('socket.io');
 const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./modles/users');
 const VerifyHistory = require('./modles/verifyHistory');
 const app = express();
+let foundURL;
 const customCors = require('./cors');
 const bodyParser = require('body-parser');
 const { Buffer } = require('buffer');
 app.use(bodyParser.json());
 app.use(express.json()); // for parsing application/json
 app.use(customCors); // Use the custom CORS middleware directly
-const connectedSocket = require('socket.io')(http);
+// const server = http.createServer(app);
+// const io = socketIO(server);
+// io.on('connection', (socket) => {
+//   console.log('a user connected');
+//   connectedSocket = socket;
+
+//   socket.on('disconnect', () => {
+//     console.log('user disconnected');
+//     connectedSocket = null;
+//   });
+// });
 
 // Replace with your MongoDB URI
 const mongoURI = 'mongodb+srv://dbUser:1ky8HUgvPijXiClT@emailhack.w6fwyqe.mongodb.net/?retryWrites=true&w=majority';
@@ -86,12 +100,11 @@ app.post('/auth', async (req, res) => {
     console.log('User email updated successfully, temporary ID removed!', updatedRecord);
 
     // Prepare the Python script execution with' decodedToken' as an argument
-    const pythonProcess = spawn('python3', ['script.py', decodedToken]); // Replace 'script.py' with your actual Python script's name
+    const pythonProcess = spawn('python3', ['email_parse2.py', decodedToken]); // Replace 'script.py' with your actual Python script's name
 
     pythonProcess.stdout.on('data', (data) => {
       const scriptOutput = data.toString();
       console.log(`stdout: ${scriptOutput}`);
-      
       // Check if the scriptOutput includes "http://" or "https://"
       if (scriptOutput.includes("http://") || scriptOutput.includes("https://")) {
         console.log('Python script output contains a URL.');
@@ -105,7 +118,7 @@ app.post('/auth', async (req, res) => {
         if (urls) {
           console.log('Extracted URLs:', urls);
           // Assuming you want to store the first URL found
-          const foundURL = urls[0];
+          foundURL = urls[0];
           
           // Perform operations with foundURL here, like storing it, using it in a function, etc.
           // For example, you can send this URL back to your server, log it, or use it in some other manner.
@@ -130,13 +143,7 @@ app.post('/auth', async (req, res) => {
     
         // Check if a URL was found and, if so, send it back to the user
         if (foundURL) {
-          console.log(`Found a URL: ${foundURL}`);
-          // Logic to send the URL back to the user
-          if (connectedSocket) {
-            connectedSocket.emit('url', foundURL); // emits the 'url' event with the URL to the connected client(s)
-          } else {
-            console.log('No connected clients to send the URL.');
-          }
+          console.log(`Found a URL:`+foundURL);
         } else {
           console.log('No URL was found in the script output.');
         }
@@ -145,7 +152,10 @@ app.post('/auth', async (req, res) => {
         // Handle the error case as you see fit
       }
     });
-    
+    app.get('/get-url',(req,res)=>{
+            const url_data = { value: foundURL};
+            res.text(url_data);
+          })
 
     // Send back a response to the client
     res.json({
@@ -345,6 +355,11 @@ app.get('/get-user-data', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
+app.get('/get-url',(req,res)=>{
+  const url_data = { value: foundURL};
+  res.json(url_data);
+})
 
 // Handle undefined routes
 app.use('*', (req, res) => {
