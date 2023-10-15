@@ -7,7 +7,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #2ECC71; /* Green background */
+    background-color: forestgreen; /* Green background */
     text-align: center;
     margin: 0;
     padding: 20px;
@@ -15,7 +15,7 @@ body {
 
 h1 {
     font-size: 24px;
-    color: #3498DB; /* Blue heading text */
+    color: #fde9be; /* Blue heading text */
     margin: 20px 0;
 }
 
@@ -55,7 +55,7 @@ button {
 }
 
 button:hover {
-    background-color: #27AE60; /* Darker green on hover */
+    background-color: #a1dcee; /* Darker green on hover */
 }
 
 /* Add some spacing and alignment to buttons */
@@ -65,7 +65,7 @@ button:hover {
 }
 
 #Auth {
-    background-color: #3498DB; /* Blue button background */
+    background-color: #85eee1; /* Blue button background */
     color: #fff;
 }
 
