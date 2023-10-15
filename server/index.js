@@ -4,10 +4,8 @@ const User = require('./modles/users');
 const app = express();
 const customCors = require('./cors');
 const bodyParser = require('body-parser');
-
+app.use(bodyParser.json());
 app.use(express.json()); // for parsing application/json
-
-// Enable custom CORS middleware for all requests
 app.use(customCors); // Use the custom CORS middleware directly
 
 // Replace with your MongoDB URI
@@ -32,7 +30,6 @@ app.post('/register', async (req, res) => {
   }
 });
 
-app.use(bodyParser.json());
 
 app.post('/', async (req, res) => {
   try {
