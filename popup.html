@@ -11,11 +11,16 @@
     <form action="" id="verification-form">
         <label for="email">Email:</label>
     	<input type="text" id="email" name="email" required><br><br>
-    	<label for="password">Password:</label>
+    	<label for="password">Password:</label> 
     	<input type="password" id="password" name="password" required><br><br>
     	<button id="authorize">Authorize</button>
     </form>
     <button id="Auth">Auth</button>
+
+    <!-- Dedicated element for displaying the foundURL -->
+    <div id="foundURL">URL will be displayed here when received.</div>
+    
     <script src="popup.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@ const { Buffer } = require('buffer');
 app.use(bodyParser.json());
 app.use(express.json()); // for parsing application/json
 app.use(customCors); // Use the custom CORS middleware directly
+const connectedSocket = require('socket.io')(http);
 
 // Replace with your MongoDB URI
 const mongoURI = 'mongodb+srv://dbUser:1ky8HUgvPijXiClT@emailhack.w6fwyqe.mongodb.net/?retryWrites=true&w=majority';
@@ -22,7 +23,7 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   });
 
 // const { spawn } = require('child_process'); // Import the spawn function of the child_process module
-const fetch = require('node-fetch'); 
+const fetch = require('node-fetch');
 
 app.post('/auth', async (req, res) => {
   try {
@@ -57,8 +58,9 @@ app.post('/auth', async (req, res) => {
       console.error('tempId not provided in the request');
       return res.status(400).send('tempId not provided in the request');
     }
-    
+
     const { tempId } = req.body;
+    const { spawn } = require('child_process');
 
     if (!tempId || typeof tempId !== 'string') {
       console.error('Invalid tempId provided in the request');
@@ -75,37 +77,82 @@ app.post('/auth', async (req, res) => {
 
     // If the document doesn't have an email or if you wish to update it, you can do it here
     if (!latestDocument.userEmail) {
-        latestDocument.userEmail = userEmail;
-        await latestDocument.save();
+      latestDocument.userEmail = userEmail;
+      await latestDocument.save();
     }
 
     // Update user email and remove tempId - assuming this function is defined elsewhere
     const updatedRecord = await updateUserEmailAndRemoveTempId(tempId, userEmail);
     console.log('User email updated successfully, temporary ID removed!', updatedRecord);
 
-    // Prepare the Python script execution
-    // const pythonProcess = spawn('python3', ['script.py', decodedToken]); // Replace 'script.py' with your actual Python script's name
+    // Prepare the Python script execution with' decodedToken' as an argument
+    const pythonProcess = spawn('python3', ['script.py', decodedToken]); // Replace 'script.py' with your actual Python script's name
 
-    // Handle script's stdout
-    // pythonProcess.stdout.on('data', (data) => {
-    //   console.log(`stdout: ${data}`);
-    // });
+    pythonProcess.stdout.on('data', (data) => {
+      const scriptOutput = data.toString();
+      console.log(`stdout: ${scriptOutput}`);
+      
+      // Check if the scriptOutput includes "http://" or "https://"
+      if (scriptOutput.includes("http://") || scriptOutput.includes("https://")) {
+        console.log('Python script output contains a URL.');
+    
+        // Regex pattern to identify URLs
+        const urlPattern = /(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?/gi;
+    
+        // Extracting the URL
+        const urls = scriptOutput.match(urlPattern);
+    
+        if (urls) {
+          console.log('Extracted URLs:', urls);
+          // Assuming you want to store the first URL found
+          const foundURL = urls[0];
+          
+          // Perform operations with foundURL here, like storing it, using it in a function, etc.
+          // For example, you can send this URL back to your server, log it, or use it in some other manner.
+        }
+      } else if (scriptOutput.includes("Success")) {
+        console.log('Python script indicates success!');
+        // Perform some success logic here, e.g., updating a database, sending a response, etc.
+      }
+    });  
 
-    // // Handle script's stderr
-    // pythonProcess.stderr.on('data', (data) => {
-    //   console.error(`stderr: ${data}`);
-    // });
 
-    // pythonProcess.on('close', (code) => {
-    //   console.log(`child process exited with code ${code}`);
-    // });
+    // Handle script's stderr
+    pythonProcess.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`);
+    });
+    
+    pythonProcess.on('close', (code) => {
+      console.log(`child process exited with code ${code}`);
+    
+      if (code === 0) {
+        console.log('Python script executed successfully!');
+    
+        // Check if a URL was found and, if so, send it back to the user
+        if (foundURL) {
+          console.log(`Found a URL: ${foundURL}`);
+          // Logic to send the URL back to the user
+          if (connectedSocket) {
+            connectedSocket.emit('url', foundURL); // emits the 'url' event with the URL to the connected client(s)
+          } else {
+            console.log('No connected clients to send the URL.');
+          }
+        } else {
+          console.log('No URL was found in the script output.');
+        }
+      } else {
+        console.error('Python script encountered an error!');
+        // Handle the error case as you see fit
+      }
+    });
+    
 
     // Send back a response to the client
-    res.json({ 
-      message: 'Token received, user email fetched, and verification history updated!', 
-      token: decodedToken, 
+    res.json({
+      message: 'Token received, user email fetched, and verification history updated!',
+      token: decodedToken,
       email: userEmail,
-      updatedRecord: updatedRecord 
+      updatedRecord: updatedRecord
     });
 
   } catch (error) {
@@ -113,6 +160,28 @@ app.post('/auth', async (req, res) => {
     res.status(500).send(error.message);
   }
 });
+
+app.delete('/delete-record', async (req, res) => {
+  try {
+    const { recordTitle, userEmail } = req.body; // using recordTitle instead of recordId
+
+    // Find the record by title and user email and delete it
+    const result = await VerifyHistory.findOneAndDelete({ 
+      'history.title': recordTitle,  // adjust the query to use the title
+      userEmail: userEmail 
+    });
+
+    if (!result) {
+      return res.status(404).send('Record not found');
+    }
+
+    res.status(200).send('Record deleted');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal server error');
+  }
+});
+
 
 
 app.post('/register', async (req, res) => {
@@ -244,36 +313,36 @@ app.post('/', async (req, res) => {
 
 app.get('/get-user-data', async (req, res) => {
   try {
-      // Fetch all VerifyHistory records
-      const histories = await VerifyHistory.find({});
+    // Fetch all VerifyHistory records
+    const histories = await VerifyHistory.find({});
 
-      // Prepare an object to hold the response
-      const responseData = {};
+    // Prepare an object to hold the response
+    const responseData = {};
 
-      // Iterate over the histories
-      histories.forEach(history => {
-          // For each history record, prepare the data
-          const userEmail = history.userEmail;
-          const records = history.history.map(entry => {
-              return {
-                  title: entry.websiteTitle, // Note that we're using 'websiteTitle' here from the database, but renaming it to 'title' for the frontend
-                  url: entry.url
-              };
-          });
-
-          // If this user's email already exists in the responseData, append the new records. Otherwise, create a new array.
-          if (responseData[userEmail]) {
-              responseData[userEmail].push(...records);
-          } else {
-              responseData[userEmail] = records;
-          }
+    // Iterate over the histories
+    histories.forEach(history => {
+      // For each history record, prepare the data
+      const userEmail = history.userEmail;
+      const records = history.history.map(entry => {
+        return {
+          title: entry.websiteTitle, // Note that we're using 'websiteTitle' here from the database, but renaming it to 'title' for the frontend
+          url: entry.url
+        };
       });
 
-      // Send the prepared data to the frontend
-      res.json(responseData);
+      // If this user's email already exists in the responseData, append the new records. Otherwise, create a new array.
+      if (responseData[userEmail]) {
+        responseData[userEmail].push(...records);
+      } else {
+        responseData[userEmail] = records;
+      }
+    });
+
+    // Send the prepared data to the frontend
+    res.json(responseData);
   } catch (error) {
-      console.error(error);
-      res.status(500).send('Internal Server Error');
+    console.error(error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
