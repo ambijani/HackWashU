@@ -3,10 +3,9 @@ const mongoose = require('mongoose');
 const User = require('./modles/users');
 const app = express();
 const customCors = require('./cors');
-
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
 app.use(express.json()); // for parsing application/json
-
-// Enable custom CORS middleware for all requests
 app.use(customCors); // Use the custom CORS middleware directly
 
 // Replace with your MongoDB URI
@@ -31,21 +30,30 @@ app.post('/register', async (req, res) => {
   }
 });
 
+
 app.post('/', async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
-    if (!user) {
-      return res.status(400).send('Cannot find user');
+    // Here, we're assuming the tab info is being sent in the body of the request
+    const tabInfo = req.body; // You might need to adjust this depending on how the data is sent
+    const { title, url } = tabInfo;
+
+    if (!title || !url) {
+      return res.status(400).send('Title or URL missing in the request');
     }
-    if (!(await user.comparePassword(req.body.password))) {
-      return res.status(400).send('Invalid password');
-    }
-    res.send('Logged in');
+
+    // Log the title and URL
+    console.log(`Title: ${title}`);
+    console.log(`URL: ${url}`);
+
+    // Sending back a success response
+    res.json({ message: 'Tab information received successfully!' });
   } catch (error) {
-    console.error('Error during user login:', error.message); // Log the error message
-    res.status(500).send(error.message); // Send back only the error message, not the whole error object
+    console.error('Error while receiving tab information:', error.message);
+    res.status(500).send(error.message);
   }
 });
+
+
 
 // Handle undefined routes
 app.use('*', (req, res) => {

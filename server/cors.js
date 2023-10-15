@@ -1,6 +1,9 @@
 const cors = require('cors');
 
-const allowedOrigins = ['chrome-extension://nnkmeadnjdnkbecimkifdhjhialbbfmo'];
+const allowedOrigins = [
+  'chrome-extension://nnkmeadnjdnkbecimkifdhjhialbbfmo',
+  'chrome-extension://hajkedmancfocfnpckhcbbojjhbfahgc'
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
