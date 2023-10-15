@@ -19,6 +19,28 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     console.error('Error connecting to MongoDB:', err.message); // More descriptive error message
   });
 
+  app.post('/auth', async (req, res) => {
+    try {
+      // Check if the token exists in the request body
+      if (!req.body.token) {
+        return res.status(400).send('Token missing in the request');
+      }
+      console.log(req.body.token);
+      // Decode token from Base64 using Buffer, as 'atob' is not available in Node.js
+      const decodedToken = Buffer.from(req.body.token, 'base64').toString('ascii'); // 'ascii' or 'utf8' depending on the token's encoding
+  
+      // Log the decoded token
+      console.log('Decoded token:', decodedToken);
+  
+      // Send a response back to the client
+      res.json({ message: 'Token received and decoded successfully!', token: decodedToken });
+    } catch (error) {
+      console.error('Error while receiving or decoding token:', error.message);
+      res.status(500).send(error.message);
+    }
+  });  
+  
+
 app.post('/register', async (req, res) => {
   try {
     const user = new User(req.body);

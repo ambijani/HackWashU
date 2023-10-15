@@ -31,7 +31,7 @@
       }
     ],
     "oauth2": {
-      "client_id": "YOUR_CLIENT_ID", 
+      "client_id": "692303129460-hn71h6pko6qq6icumb87rvt9qdnspf7q.apps.googleusercontent.com", 
       "scopes": ["https://www.googleapis.com/auth/gmail.readonly"],
       "redirect_uri": "chrome-extension://your-extension-id/oauth2-redirect.html",
       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
