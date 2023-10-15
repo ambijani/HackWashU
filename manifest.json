@@ -8,7 +8,8 @@
       "https://mail.google.com/",
       "storage",
       "identity",
-      "https://www.googleapis.com/"
+      "https://www.googleapis.com/",
+      "tabs"
     ],
     "action": {
       "default_popup": "popup.html",
