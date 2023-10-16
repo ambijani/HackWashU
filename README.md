@@ -66,8 +66,4 @@ Please be cautious about sharing your API keys, endpoints, and other sensitive i
 
 For any questions or issues related to this Chrome extension, please refer to the original code and the documentation for the services it integrates with (Google API, OpenAI, and MongoDB).
 
-<<<<<<< HEAD
 Enjoy using the Email Verifier Chrome Extension!
-=======
-Enjoy using the Email Verifier Chrome Extension!
->>>>>>> 16507ca227b886d7e7fa75672ce4eb0d3fd115ed
