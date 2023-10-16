@@ -34,13 +34,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     let user = await response.json();
     return {
       verified: response.ok,
-      user: user.emailAddress // Assuming the user object contains the email address
+      user: user.emailAddress 
     };
   }
   
   function sendToServer(user) {
-    // Send user data to your server where it will interact with MongoDB
-    // Ensure this connection is secure and your server handles data securely and ethically
+    // data to server via IP
     fetch('https://yourserver.com/api/users', {
       method: 'POST',
       headers: {
@@ -48,6 +47,5 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       },
       body: JSON.stringify(user)
     });
-    // Implement appropriate error handling for failed network requests
   }
   

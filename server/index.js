@@ -89,7 +89,6 @@ app.post('/auth', async (req, res) => {
       return res.status(404).send(`No verification history found for tempId: ${tempId}`);
     }
 
-    // If the document doesn't have an email or if you wish to update it, you can do it here
     if (!latestDocument.userEmail) {
       latestDocument.userEmail = userEmail;
       await latestDocument.save();
@@ -120,8 +119,6 @@ app.post('/auth', async (req, res) => {
           // Assuming you want to store the first URL found
           foundURL = urls[0];
           
-          // Perform operations with foundURL here, like storing it, using it in a function, etc.
-          // For example, you can send this URL back to your server, log it, or use it in some other manner.
         }
       } else if (scriptOutput.includes("Success")) {
         console.log('Python script indicates success!');
